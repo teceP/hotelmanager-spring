@@ -1,0 +1,49 @@
+services:
+  hotelmanager-backend:
+    build:
+      context: .
+      no_cache: true
+    ports:
+      - '8080:8080'
+      - '8081:8081' # managementport for actuator if needed
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/hotelmanager
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    depends_on:
+      psql:
+        condition: service_healthy
+
+  hotelmanager-frontend:
+    image: mariomario77/hotelmanager-angular:1.0.0
+    ports:
+      - '4200:4200'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/hotelmanager
+    depends_on:
+      hotelmanager-backend:
+        condition: service_healthy
+
+  psql:
+    image: bitnami/postgresql:16.3.0
+    ports:
+      - '5432:5432'
+    volumes:
+      - psqldata:/bitnami/postgresql
+    environment:
+      POSTGRESQL_USERNAME: user
+      POSTGRESQL_PASSWORD: pass
+      POSTGRESQL_DATABASE: hotelmanager
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+volumes:
+  psqldata: {}
