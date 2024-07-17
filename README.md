@@ -26,10 +26,11 @@ Want to test with Postman? The Spring Backend is exposed on port 8080.
 - Tested with Testcontainers instead of H2
 - Swagger UI integrated at /swagger-ui/index.html
 - Actuator integrated for readiness/livenessprobe endpoint support
-- Customized Spring Boot Banner
+- Github Actions Docker Build Pipeline
 - Initial loading data on startup
 - docker-compose.yml for local development provided
 - docker compose also contains the frontend component. Frontend repository is this https://github.com/teceP/hotelmanager-angular
 - Dockerfile for local development provided (also executed in docker-compose file)
 - Spring build-image goal integrated, run with: mvn spring-boot:build-image
 - Well documented all methods and classes
+- Customized Spring Boot Banner
