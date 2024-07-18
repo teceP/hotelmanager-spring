@@ -20,6 +20,7 @@ services:
 
   hotelmanager-frontend:
     image: mariomario77/hotelmanager-angular:1.0.0
+    command: ["ng", "serve", "--host", "0.0.0.0", "-c", "development"]
     ports:
       - '4200:4200'
     environment:

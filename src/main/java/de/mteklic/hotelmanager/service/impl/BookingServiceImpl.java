@@ -4,12 +4,14 @@ import de.mteklic.hotelmanager.exception.*;
 import de.mteklic.hotelmanager.model.dto.BookingDto;
 import de.mteklic.hotelmanager.model.dto.RoomDto;
 import de.mteklic.hotelmanager.model.*;
+import de.mteklic.hotelmanager.model.BookingEvent;
 import de.mteklic.hotelmanager.repository.BookingRepository;
 import de.mteklic.hotelmanager.service.BookingService;
 import de.mteklic.hotelmanager.service.RoomService;
 import de.mteklic.hotelmanager.specification.BookingSpecifications;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -31,6 +33,8 @@ public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     /**
      * Prevent Circular dependency injection - Booking relies more on RoomService than otherwhise, that's the reason for setting @Lazy here.
      * Another solution would be to extract methods from both services and create another indepedent one, which both could @Autowire.
@@ -40,9 +44,10 @@ public class BookingServiceImpl implements BookingService {
     private RoomService roomService;
 
     @Lazy
-    public BookingServiceImpl(BookingRepository bookingRepository, RoomService roomService){
+    public BookingServiceImpl(BookingRepository bookingRepository, RoomService roomService, ApplicationEventPublisher eventPublisher){
         this.bookingRepository = bookingRepository;
         this.roomService = roomService;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -76,7 +81,11 @@ public class BookingServiceImpl implements BookingService {
         // Save the booking
         this.bookingRepository.save(booking);
 
-        return convertToDto(booking);
+        // Publish booking event
+        BookingDto savedBookingDto = convertToDto(booking);
+        eventPublisher.publishEvent(new BookingEvent(this, savedBookingDto));
+
+        return savedBookingDto;
     }
 
     @Override
