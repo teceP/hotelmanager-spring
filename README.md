@@ -23,6 +23,7 @@ Want to test with Postman? The Spring Backend is exposed on port 8080.
 - Check room availability
 - Filter hotel rooms by filter specification
 - Validate booking dates (start and end date)
+- Notification on email booked event
 - Tested with Testcontainers instead of H2
 - Swagger UI integrated at /swagger-ui/index.html
 - Actuator integrated for readiness/livenessprobe endpoint support
