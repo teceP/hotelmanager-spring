@@ -43,14 +43,11 @@ public class BookingServiceImpl implements BookingService {
      */
     private RoomService roomService;
 
-    private final RoomReadOnlyRepository roomReadOnlyRepository;
-
     @Lazy
-    public BookingServiceImpl(BookingRepository bookingRepository, RoomService roomService, ApplicationEventPublisher eventPublisher, RoomReadOnlyRepository roomReadOnlyRepository){
+    public BookingServiceImpl(BookingRepository bookingRepository, RoomService roomService, ApplicationEventPublisher eventPublisher){
         this.bookingRepository = bookingRepository;
         this.roomService = roomService;
         this.eventPublisher = eventPublisher;
-        this.roomReadOnlyRepository = roomReadOnlyRepository;
     }
 
     @Override
@@ -89,10 +86,6 @@ public class BookingServiceImpl implements BookingService {
         eventPublisher.publishEvent(new BookingEvent(this, savedBookingDto));
 
         return savedBookingDto;
-    }
-
-    public Room retrieveRoomR(Long roomId) {
-        return roomReadOnlyRepository.findById(roomId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity not found"));
     }
 
     @Override
