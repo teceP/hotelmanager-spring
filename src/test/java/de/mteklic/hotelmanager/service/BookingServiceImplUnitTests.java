@@ -44,7 +44,7 @@ public class BookingServiceImplUnitTests {
         MockitoAnnotations.openMocks(this);
     }
     @Test
-    void testAddBooking_ValidBooking() throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
+    void testCreateBooking_ValidBooking() throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
         Long roomId = 1L;
         LocalDate startDate = LocalDate.now().plusDays(1);
         LocalDate endDate = LocalDate.now().plusDays(5);
@@ -59,7 +59,7 @@ public class BookingServiceImplUnitTests {
             return booking;
         });
 
-        BookingDto result = bookingServiceImpl.addBooking(roomId, bookingDto);
+        BookingDto result = bookingServiceImpl.createBooking(roomId, bookingDto);
 
         verify(roomServiceImpl).getRoom(roomId); // Verify that getRoom was called with roomId
         verify(bookingRepository).save(any()); // Verify that save was called with any booking
@@ -69,7 +69,7 @@ public class BookingServiceImplUnitTests {
     }
 
     @Test
-    void testAddBooking_RoomBookedOutException() {
+    void testCreateBooking_RoomBookedOutException() {
         Long roomId = 1L;
         LocalDate startDate = LocalDate.now().plusDays(1);
         LocalDate endDate = LocalDate.now().plusDays(5);
@@ -80,101 +80,101 @@ public class BookingServiceImplUnitTests {
         when(bookingRepository.findAllByRoomId(roomId)).thenReturn(existingBookings);
 
         BookingDto bookingDto = new BookingDto(null, startDate, endDate);
-        assertThrows(RoomBookedOutException.class, () -> bookingServiceImpl.addBooking(roomId, bookingDto));
+        assertThrows(RoomBookedOutException.class, () -> bookingServiceImpl.createBooking(roomId, bookingDto));
     }
 
     @Test
-    void testAddBooking_EndDateBeforeStartDateException() {
+    void testCreateBooking_EndDateBeforeStartDateException() {
         Long roomId = 1L;
         LocalDate startDate = LocalDate.now().plusDays(5);
         LocalDate endDate = LocalDate.now().plusDays(1);
 
         BookingDto bookingDto = new BookingDto(null, startDate, endDate);
 
-        assertThrows(EndDateBeforeStartDateException.class, () -> bookingServiceImpl.addBooking(roomId, bookingDto));
+        assertThrows(EndDateBeforeStartDateException.class, () -> bookingServiceImpl.createBooking(roomId, bookingDto));
     }
 
     @Test
-    void testAddBooking_StartAndOrEndDateBeforeNowException() {
+    void testCreateBooking_StartAndOrEndDateBeforeNowException() {
         Long roomId = 1L;
         LocalDate startDate = LocalDate.now().minusDays(1);
         LocalDate endDate = LocalDate.now().plusDays(5);
 
         BookingDto bookingDto = new BookingDto(null, startDate, endDate);
 
-        assertThrows(StartAndOrEndDateBeforeNowException.class, () -> bookingServiceImpl.addBooking(roomId, bookingDto));
+        assertThrows(StartAndOrEndDateBeforeNowException.class, () -> bookingServiceImpl.createBooking(roomId, bookingDto));
     }
 
     @Test
-    void testAddBooking_StartDateEqualsEndDate() {
+    void testCreateBooking_StartDateEqualsEndDate() {
         Long roomId = 1L;
         LocalDate date = LocalDate.now().plusDays(1);
         RoomDto roomDto = new RoomDto(roomId, "Test Room", "", true, RoomSize.SUITE, Collections.emptyList());
-        roomServiceImpl.addRoom(roomDto);
+        roomServiceImpl.createRoom(roomDto);
         when(roomServiceImpl.getRoom(roomId)).thenReturn(roomDto);
 
         BookingDto bookingDto = new BookingDto(null, date, date);
 
-        assertDoesNotThrow(() -> bookingServiceImpl.addBooking(roomId, bookingDto));
+        assertDoesNotThrow(() -> bookingServiceImpl.createBooking(roomId, bookingDto));
     }
 
     @Test
-    void testAddBooking_EndDateBeforeStartDateOneDay() {
+    void testCreateBooking_EndDateBeforeStartDateOneDay() {
         Long roomId = 1L;
         LocalDate startDate = LocalDate.now().plusDays(5);
         LocalDate endDate = startDate.minusDays(1);
 
         BookingDto bookingDto = new BookingDto(null, startDate, endDate);
 
-        assertThrows(EndDateBeforeStartDateException.class, () -> bookingServiceImpl.addBooking(roomId, bookingDto));
+        assertThrows(EndDateBeforeStartDateException.class, () -> bookingServiceImpl.createBooking(roomId, bookingDto));
     }
 
     @Test
-    void testAddBooking_EndDateBeforeStartDateLongPeriod() {
+    void testCreateBooking_EndDateBeforeStartDateLongPeriod() {
         Long roomId = 1L;
         LocalDate startDate = LocalDate.now().plusDays(10);
         LocalDate endDate = LocalDate.now().plusDays(1);
 
         BookingDto bookingDto = new BookingDto(null, startDate, endDate);
 
-        assertThrows(EndDateBeforeStartDateException.class, () -> bookingServiceImpl.addBooking(roomId, bookingDto));
+        assertThrows(EndDateBeforeStartDateException.class, () -> bookingServiceImpl.createBooking(roomId, bookingDto));
     }
 
     @Test
-    void testAddBooking_PastStartDateAndEndDate() {
+    void testCreateBooking_PastStartDateAndEndDate() {
         Long roomId = 1L;
         LocalDate startDate = LocalDate.now().minusDays(5);
         LocalDate endDate = LocalDate.now().minusDays(1);
 
         BookingDto bookingDto = new BookingDto(null, startDate, endDate);
 
-        assertThrows(StartAndOrEndDateBeforeNowException.class, () -> bookingServiceImpl.addBooking(roomId, bookingDto));
+        assertThrows(StartAndOrEndDateBeforeNowException.class, () -> bookingServiceImpl.createBooking(roomId, bookingDto));
     }
 
     @Test
-    void testAddBooking_StartDateInThePast() {
+    void testCreateBooking_StartDateInThePast() {
         Long roomId = 1L;
         LocalDate startDate = LocalDate.now().minusDays(1);
         LocalDate endDate = LocalDate.now().plusDays(5);
 
         BookingDto bookingDto = new BookingDto(null, startDate, endDate);
 
-        assertThrows(StartAndOrEndDateBeforeNowException.class, () -> bookingServiceImpl.addBooking(roomId, bookingDto));
+        assertThrows(StartAndOrEndDateBeforeNowException.class, () -> bookingServiceImpl.createBooking(roomId, bookingDto));
     }
 
     @Test
-    void testAddBooking_EndDateInThePast() {
+    void testCreateBooking_EndDateInThePast() {
         Long roomId = 1L;
         LocalDate startDate = LocalDate.now().plusDays(1);
         LocalDate endDate = LocalDate.now().minusDays(1);
 
         BookingDto bookingDto = new BookingDto(null, startDate, endDate);
 
-        assertThrows(StartAndOrEndDateBeforeNowException.class, () -> bookingServiceImpl.addBooking(roomId, bookingDto));
+        assertThrows(StartAndOrEndDateBeforeNowException.class, () -> bookingServiceImpl.createBooking(roomId, bookingDto));
     }
 
     @Test
-    void testAddBooking_BookingInLeapYear() throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
+    void testCreateBooking_BookingInLeapYear() throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
         Long roomId = 1L;
         int currentYear = LocalDate.now().getYear() + 1;
         int nextLeapYear = -1;
@@ -200,7 +200,7 @@ public class BookingServiceImplUnitTests {
             return booking;
         });
 
-        BookingDto result = bookingServiceImpl.addBooking(roomId, bookingDto);
+        BookingDto result = bookingServiceImpl.createBooking(roomId, bookingDto);
 
         verify(roomServiceImpl).getRoom(roomId);
         verify(bookingRepository).save(any());
@@ -209,7 +209,7 @@ public class BookingServiceImplUnitTests {
     }
 
     @Test
-    void testAddBooking_BookingInNonLeapYear() throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
+    void testCreateBooking_BookingInNonLeapYear() throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
         Long roomId = 1L;
         LocalDate startDate = LocalDate.now().plusYears(0).withMonth(12).withDayOfMonth(30); // End of December
         LocalDate endDate = LocalDate.now().plusYears(1).withMonth(1).withDayOfMonth(3); // Start of January
@@ -225,7 +225,7 @@ public class BookingServiceImplUnitTests {
             return booking;
         });
 
-        BookingDto result = bookingServiceImpl.addBooking(roomId, bookingDto);
+        BookingDto result = bookingServiceImpl.createBooking(roomId, bookingDto);
 
         verify(roomServiceImpl).getRoom(roomId);
         verify(bookingRepository).save(any());
@@ -234,31 +234,31 @@ public class BookingServiceImplUnitTests {
     }
 
     @Test
-    void testAddBooking_SameStartAndEndDates() {
+    void testCreateBooking_SameStartAndEndDates() {
         Long roomId = 1L;
         LocalDate date = LocalDate.now().plusDays(1);
         RoomDto roomDto = new RoomDto(roomId, "Test Room", "", true, RoomSize.SUITE, Collections.emptyList());
-        roomServiceImpl.addRoom(roomDto);
+        roomServiceImpl.createRoom(roomDto);
         when(roomServiceImpl.getRoom(roomId)).thenReturn(roomDto);
 
         BookingDto bookingDto = new BookingDto(null, date, date);
 
-        assertDoesNotThrow(() -> bookingServiceImpl.addBooking(roomId, bookingDto));
+        assertDoesNotThrow(() -> bookingServiceImpl.createBooking(roomId, bookingDto));
     }
 
     @Test
-    void testAddBooking_MinimumStartDateAndEndDate() {
+    void testCreateBooking_MinimumStartDateAndEndDate() {
         Long roomId = 1L;
         LocalDate startDate = LocalDate.MIN;
         LocalDate endDate = LocalDate.MIN;
 
         BookingDto bookingDto = new BookingDto(null, startDate, endDate);
 
-        assertThrows(StartAndOrEndDateBeforeNowException.class, () -> bookingServiceImpl.addBooking(roomId, bookingDto));
+        assertThrows(StartAndOrEndDateBeforeNowException.class, () -> bookingServiceImpl.createBooking(roomId, bookingDto));
     }
 
     @Test
-    public void testAddBooking_EndDateTodayStartInFutureEdge(){
+    public void testCreateBooking_EndDateTodayStartInFutureEdge(){
         Booking booking = Booking.builder()
                 .room(null)
                 .startDate(LocalDate.now().plusDays(7)) // future
@@ -266,18 +266,18 @@ public class BookingServiceImplUnitTests {
                 .build();
 
         BookingDto bookingDto = bookingServiceImpl.convertToDto(booking);
-        assertThrows(EndDateBeforeStartDateException.class, () -> bookingServiceImpl.addBooking(1L, bookingDto));
+        assertThrows(EndDateBeforeStartDateException.class, () -> bookingServiceImpl.createBooking(1L, bookingDto));
     }
 
     @Test
-    public void testAddBooking_EndDateTodayStartMinimumInFuture(){
+    public void testCreateBooking_EndDateTodayStartMinimumInFuture(){
         Booking booking = Booking.builder()
                 .room(null)
                 .startDate(LocalDate.now().plusDays(7)) // future
                 .endDate(LocalDate.now().plusDays(6)) // ealier
                 .build();
         BookingDto bookingDto = bookingServiceImpl.convertToDto(booking);
-        assertThrows(EndDateBeforeStartDateException.class, () -> bookingServiceImpl.addBooking(1L, bookingDto));
+        assertThrows(EndDateBeforeStartDateException.class, () -> bookingServiceImpl.createBooking(1L, bookingDto));
     }
 
     @Test
@@ -301,7 +301,7 @@ public class BookingServiceImplUnitTests {
         when(bookingServiceImpl.retrieveRoom(ArgumentMatchers.any())).thenReturn(roomDto);
         when(bookingRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(booking));
 
-        BookingDto bookingDto = bookingServiceImpl.addBooking(1L, bookingServiceImpl.convertToDto(booking));
+        BookingDto bookingDto = bookingServiceImpl.createBooking(1L, bookingServiceImpl.convertToDto(booking));
         bookingServiceImpl.deleteBooking(bookingDto.id());
 
         log.info(bookingDto.toString());
@@ -333,7 +333,7 @@ public class BookingServiceImplUnitTests {
         log.info(room.toString());
         when(bookingServiceImpl.retrieveRoom(ArgumentMatchers.any())).thenReturn(roomDto);
 
-        BookingDto bookingDto = bookingServiceImpl.addBooking(1L, bookingServiceImpl.convertToDto(booking));
+        BookingDto bookingDto = bookingServiceImpl.createBooking(1L, bookingServiceImpl.convertToDto(booking));
         assertThrows(ResponseStatusException.class, () -> bookingServiceImpl.deleteBooking(10000L));
 
         log.info(bookingDto.toString());
@@ -365,7 +365,7 @@ public class BookingServiceImplUnitTests {
         when(bookingServiceImpl.retrieveRoom(ArgumentMatchers.any())).thenReturn(roomDto);
         when(bookingRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(booking));
 
-        BookingDto bookingDto = bookingServiceImpl.addBooking(1L, bookingServiceImpl.convertToDto(booking));
+        BookingDto bookingDto = bookingServiceImpl.createBooking(1L, bookingServiceImpl.convertToDto(booking));
         bookingServiceImpl.deleteBooking(10000L); //stubbed
 
         log.info(bookingDto.toString());

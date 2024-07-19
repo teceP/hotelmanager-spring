@@ -75,12 +75,12 @@ public class RoomServiceImplUnitTests {
     }
 
     @Test
-    public void testAddRoom() {
+    public void testCreateRoom() {
         RoomDto roomDto = RoomDto.builder().name("New Room").build();
         Room room = Room.builder().id(1L).name("New Room").build();
 
         when(roomRepository.save(any(Room.class))).thenReturn(room);
-        RoomDto savedRoomDto = roomServiceImpl.addRoom(roomDto);
+        RoomDto savedRoomDto = roomServiceImpl.createRoom(roomDto);
 
         assertNotNull(savedRoomDto);
         assertEquals("New Room", savedRoomDto.name());
@@ -138,7 +138,7 @@ public class RoomServiceImplUnitTests {
         Room room3 = Room.builder().id(2L).name("RoomThree").hasMinibar(true).roomSize(RoomSize.SUITE).build();
 
         when(roomRepository.findAll(any(Specification.class))).thenReturn(List.of(room1, room2, room3));
-        when(bookingServiceImpl.getAvailableBookings(any(), any(), any())).thenReturn(List.of(
+        when(bookingServiceImpl.getUnavailableBookings(any(), any(), any())).thenReturn(List.of(
                 Booking.builder().room(room1).build(),
                 Booking.builder().room(room2).build()
         ));
@@ -148,7 +148,7 @@ public class RoomServiceImplUnitTests {
         roomServiceImpl.filterRooms(null, "RoomOne", null, startDate, endDate, null, null);
 
         verify(roomRepository, times(1)).findAll(any(Specification.class));
-        verify(bookingServiceImpl, times(1)).getAvailableBookings(any(), any(), any());
+        verify(bookingServiceImpl, times(1)).getUnavailableBookings(any(), any(), any());
     }
 }
 

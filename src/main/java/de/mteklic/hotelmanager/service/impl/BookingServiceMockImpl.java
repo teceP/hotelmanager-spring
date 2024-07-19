@@ -19,7 +19,7 @@ public class BookingServiceMockImpl implements BookingService {
     private Long nextBookingId = 1L;
 
     @Override
-    public BookingDto addBooking(Long roomId, BookingDto bookingDto) throws RoomBookedOutException, EndDateBeforeStartDateException, StartAndOrEndDateBeforeNowException {
+    public BookingDto createBooking(Long roomId, BookingDto bookingDto) throws RoomBookedOutException, EndDateBeforeStartDateException, StartAndOrEndDateBeforeNowException {
         // Simulate validation checks
         if (bookingDto.startDate().isBefore(LocalDate.now())) {
             throw new StartAndOrEndDateBeforeNowException(bookingDto.startDate(), bookingDto.endDate());
@@ -70,7 +70,7 @@ public class BookingServiceMockImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getAvailableBookings(List<Long> roomIds, LocalDate startDate, LocalDate endDate) {
+    public List<Booking> getUnavailableBookings(List<Long> roomIds, LocalDate startDate, LocalDate endDate) {
         // This method is for demonstration, not implemented in mock
         return null;
     }

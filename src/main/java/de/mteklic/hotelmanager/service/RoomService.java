@@ -1,19 +1,11 @@
 package de.mteklic.hotelmanager.service;
 
-import de.mteklic.hotelmanager.model.Booking;
 import de.mteklic.hotelmanager.model.Room;
 import de.mteklic.hotelmanager.model.RoomSize;
-import de.mteklic.hotelmanager.model.dto.BookingDto;
 import de.mteklic.hotelmanager.model.dto.RoomDto;
-import de.mteklic.hotelmanager.specification.RoomSpecifications;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface RoomService {
@@ -38,7 +30,7 @@ public interface RoomService {
      * @param roomDto RoomDto representing the room to be added.
      * @return RoomDto representing the added room.
      */
-    RoomDto addRoom(RoomDto roomDto);
+    RoomDto createRoom(RoomDto roomDto);
     /**
      * Deletes a room by its ID.
      *

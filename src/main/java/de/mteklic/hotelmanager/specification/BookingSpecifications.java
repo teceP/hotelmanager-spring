@@ -47,4 +47,17 @@ public class BookingSpecifications {
                 criteriaBuilder.greaterThanOrEqualTo(root.get("endDate"), criteriaBuilder.literal(startDate)));
     }
 
+    /**
+     * Creates a specification for finding bookings that not overlap with a given date range.
+     *
+     * @param startDate The start date of the range.
+     * @param endDate   The end date of the range.
+     * @return A specification to filter bookings that overlap with the given date range.
+     */
+    public static Specification<Booking> hasNoOverlap(LocalDate startDate, LocalDate endDate) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.and(
+                criteriaBuilder.greaterThanOrEqualTo(root.get("startDate"), criteriaBuilder.literal(endDate)),
+                criteriaBuilder.lessThanOrEqualTo(root.get("endDate"), criteriaBuilder.literal(startDate)));
+    }
+
 }

@@ -5,20 +5,11 @@ import de.mteklic.hotelmanager.exception.EndDateBeforeStartDateException;
 import de.mteklic.hotelmanager.exception.RoomBookedOutException;
 import de.mteklic.hotelmanager.exception.StartAndOrEndDateBeforeNowException;
 import de.mteklic.hotelmanager.model.Booking;
-import de.mteklic.hotelmanager.model.Room;
 import de.mteklic.hotelmanager.model.dto.BookingDto;
 import de.mteklic.hotelmanager.model.dto.RoomDto;
-import de.mteklic.hotelmanager.repository.BookingRepository;
-import de.mteklic.hotelmanager.service.impl.RoomServiceImpl;
-import de.mteklic.hotelmanager.specification.BookingSpecifications;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface BookingService {
@@ -33,7 +24,7 @@ public interface BookingService {
      * @throws EndDateBeforeStartDateException     If the end date is before the start date.
      * @throws StartAndOrEndDateBeforeNowException If either the start date or end date is before the current date.
      */
-    BookingDto addBooking(Long roomId, BookingDto bookingDto) throws RoomBookedOutException, EndDateBeforeStartDateException, StartAndOrEndDateBeforeNowException;
+    BookingDto createBooking(Long roomId, BookingDto bookingDto) throws RoomBookedOutException, EndDateBeforeStartDateException, StartAndOrEndDateBeforeNowException;
 
     /**
      * Retrieves room details by its ID.
@@ -62,14 +53,14 @@ public interface BookingService {
     BookingDto getBookingById(Long id);
 
     /**
-     * Retrieves all available bookings based on optional parameters.
+     * Retrieves all overlapping bookings based on optional parameters.
      *
      * @param roomIds   Optional list of room IDs to filter bookings.
      * @param startDate Optional start date of the booking period.
      * @param endDate   Optional end date of the booking period.
      * @return List of Booking representing available bookings that match the specified criteria.
      */
-    List<Booking> getAvailableBookings(List<Long> roomIds, LocalDate startDate, LocalDate endDate);
+    List<Booking> getUnavailableBookings(List<Long> roomIds, LocalDate startDate, LocalDate endDate);
 
     public BookingDto updateBooking(BookingDto bookingDto) throws StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException, RoomBookedOutException;
 

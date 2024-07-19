@@ -101,7 +101,7 @@ public class BookingControllerIntegrationTests {
         RoomDto roomDto = new RoomDto(1L, "Test Room", "", true, RoomSize.SUITE, Collections.emptyList());
 
         when(roomService.getRoom(anyLong())).thenReturn(roomDto);
-        bookingServiceMock.addBooking(1L, bookingDto);
+        bookingServiceMock.createBooking(1L, bookingDto);
 
         mockMvc.perform(delete("/api/v1/bookings/{id}", bookingId))
                 .andExpect(status().isNoContent());
@@ -110,19 +110,19 @@ public class BookingControllerIntegrationTests {
     }
 
     @Test
-    public void testAddBooking_InvalidDates() throws Exception {
+    public void testCreateBooking_InvalidDates() throws Exception {
         Long bookingId = 1L;
         LocalDate startDate = LocalDate.now().plusDays(1);
         LocalDate endDate = LocalDate.now().plusDays(7);
         BookingDto bookingDto = new BookingDto(bookingId, startDate, endDate);
-        when(bookingServiceMock.addBooking(anyLong(), any(BookingDto.class))).thenThrow(StartAndOrEndDateBeforeNowException.class);
+        when(bookingServiceMock.createBooking(anyLong(), any(BookingDto.class))).thenThrow(StartAndOrEndDateBeforeNowException.class);
 
         mockMvc.perform(post("/api/v1/bookings/{roomId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(bookingDto)))
                 .andExpect(status().isBadRequest());
 
-        verify(bookingServiceMock, times(1)).addBooking(anyLong(), any(BookingDto.class));
+        verify(bookingServiceMock, times(1)).createBooking(anyLong(), any(BookingDto.class));
     }
 
     private String asJsonString(final Object obj) {

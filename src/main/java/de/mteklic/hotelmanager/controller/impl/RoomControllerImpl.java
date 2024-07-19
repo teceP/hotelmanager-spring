@@ -7,7 +7,6 @@ import de.mteklic.hotelmanager.service.impl.RoomServiceImpl;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -52,8 +51,8 @@ public class RoomControllerImpl implements RoomController {
     }
 
     @Override
-    public ResponseEntity<RoomDto> addRoom(@RequestBody @Valid RoomDto roomDto) {
-        return ResponseEntity.ok(this.roomServiceImpl.addRoom(roomDto));
+    public ResponseEntity<RoomDto> createRoom(@RequestBody @Valid RoomDto roomDto) {
+        return ResponseEntity.ok(this.roomServiceImpl.createRoom(roomDto));
     }
 
     @Override
