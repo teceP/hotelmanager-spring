@@ -82,8 +82,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Transactional
-    public RoomDto editRoom(RoomDto roomDto) {
-        log.debug("Edit HotelRoom with id {} in complete mode", roomDto.id());
+    public RoomDto updateRoom(RoomDto roomDto) {
+        log.debug("Edit Room with id {} in complete mode", roomDto.id());
         Room updateableRoom = this.roomRepository.findById(roomDto.id()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity not found."));
 
         log.debug("Updateable Room before: {}", updateableRoom);
@@ -106,13 +106,13 @@ public class RoomServiceImpl implements RoomService {
             updateableRoom.setHasMinibar(roomDto.hasMinibar());
         }
 
-        log.debug("UpdateableRoom after: {}", updateableRoom);
-        // We are in a @Transactional methode - we do not need to call save()-methode.
+        log.debug("Updated Room: {}", updateableRoom);
+        // We are in a @Transactional method - we do not need to call save()-methode.
         return convertToDto(updateableRoom);
     }
 
     @Override
-    public List<RoomDto> filterRooms(List<Long> ids, String name, String description, LocalDate startDate, LocalDate endDate, Boolean hasMinibar, RoomSize roomSize) {
+    public List<RoomDto> getFilteredRooms(List<Long> ids, String name, String description, LocalDate startDate, LocalDate endDate, Boolean hasMinibar, RoomSize roomSize) {
         Specification<Room> specification = Specification.where(null);
 
         // Build specifications based on provided criteria
@@ -126,6 +126,10 @@ public class RoomServiceImpl implements RoomService {
         List<Room> filteredRooms = this.roomRepository.findAll(specification);
 
         log.debug("Filtered size after database findAll(specs): {}", filteredRooms.size());
+
+        if (!filteredRooms.isEmpty()){
+            filteredRooms.remove(0);
+        }
 
         filteredRooms = applyDateRangeFilter(filteredRooms, startDate, endDate);
 

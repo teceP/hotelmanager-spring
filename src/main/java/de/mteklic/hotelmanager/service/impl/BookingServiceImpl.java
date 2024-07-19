@@ -9,6 +9,7 @@ import de.mteklic.hotelmanager.repository.BookingRepository;
 import de.mteklic.hotelmanager.service.BookingService;
 import de.mteklic.hotelmanager.service.RoomService;
 import de.mteklic.hotelmanager.specification.BookingSpecifications;
+import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -52,15 +53,23 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDto createBooking(Long roomId, BookingDto bookingDto) throws RoomBookedOutException, EndDateBeforeStartDateException, StartAndOrEndDateBeforeNowException {
+    public BookingDto createBooking(Long roomId, BookingDto bookingDto) throws RoomBookedOutException, EndDateBeforeStartDateException, StartAndOrEndDateBeforeNowException, StartAndOrEndDateNullException {
+        log.info("Create booking with dates: {} - {}", bookingDto.startDate(), bookingDto.endDate());
+        if (bookingDto.startDate() == null || bookingDto.endDate() == null){
+            throw new StartAndOrEndDateNullException(bookingDto.startDate(), (bookingDto.endDate()));
+        }
+
+        //Fix date issue, where parsed date is always -1 day
+        //BookingDto bookingDtoR = BookingDto.builder().startDate(bookingDto.startDate().plusDays(1)).endDate(bookingDto.endDate().plusDays(1)).build();
+
         // Validate booking dates
         isDatesLegal(bookingDto.startDate(), bookingDto.endDate());
 
         // Retrieve room details without directly accessing RoomService
         RoomDto roomDto = retrieveRoom(roomId);
 
-         // Check if the room is available for booking
-         isBookingAvailable(roomDto.id(), bookingDto.startDate(), bookingDto.endDate());
+        // Check if the room is available for booking
+        isBookingAvailable(roomDto.id(), bookingDto.startDate(), bookingDto.endDate());
 
         // Convert RoomDto to Room entity, so its passable into the booking object
         Room room = Room.builder().id(roomDto.id())

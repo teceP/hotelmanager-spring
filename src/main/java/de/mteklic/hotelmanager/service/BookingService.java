@@ -4,9 +4,11 @@ package de.mteklic.hotelmanager.service;
 import de.mteklic.hotelmanager.exception.EndDateBeforeStartDateException;
 import de.mteklic.hotelmanager.exception.RoomBookedOutException;
 import de.mteklic.hotelmanager.exception.StartAndOrEndDateBeforeNowException;
+import de.mteklic.hotelmanager.exception.StartAndOrEndDateNullException;
 import de.mteklic.hotelmanager.model.Booking;
 import de.mteklic.hotelmanager.model.dto.BookingDto;
 import de.mteklic.hotelmanager.model.dto.RoomDto;
+import org.apache.coyote.BadRequestException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -24,7 +26,7 @@ public interface BookingService {
      * @throws EndDateBeforeStartDateException     If the end date is before the start date.
      * @throws StartAndOrEndDateBeforeNowException If either the start date or end date is before the current date.
      */
-    BookingDto createBooking(Long roomId, BookingDto bookingDto) throws RoomBookedOutException, EndDateBeforeStartDateException, StartAndOrEndDateBeforeNowException;
+    BookingDto createBooking(Long roomId, BookingDto bookingDto) throws RoomBookedOutException, EndDateBeforeStartDateException, StartAndOrEndDateBeforeNowException, NullPointerException, StartAndOrEndDateNullException;
 
     /**
      * Retrieves room details by its ID.

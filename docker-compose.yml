@@ -8,7 +8,7 @@ services:
       - '8081:8081' # managementport for actuator if needed
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/hotelmanager
-      LOGGING_LEVEL_ROOT: debug
+      LOGGING_LEVEL_ROOT: info
     healthcheck:
       test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
       interval: 20s

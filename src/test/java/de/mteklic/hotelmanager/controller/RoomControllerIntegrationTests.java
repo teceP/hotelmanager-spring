@@ -82,7 +82,7 @@ public class RoomControllerIntegrationTests {
     }
 
     @Test
-    public void testGetHotelRoom() throws Exception {
+    public void testGetRoom() throws Exception {
         Long roomId = 1L;
 
         when(roomServiceMock.getRoom(roomId)).thenReturn(roomDto1);
@@ -95,8 +95,8 @@ public class RoomControllerIntegrationTests {
     }
 
     @Test
-    public void testFilterRooms() throws Exception {
-        when(roomServiceMock.filterRooms(null, "Room Two", null, null, null, null, null))
+    public void testGetFilteredRoomsRooms() throws Exception {
+        when(roomServiceMock.getFilteredRooms(null, "Room Two", null, null, null, null, null))
                 .thenReturn(Collections.singletonList(roomDto2));
 
         mockMvc.perform(get("/api/v1/rooms/filter")
@@ -105,7 +105,7 @@ public class RoomControllerIntegrationTests {
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].name").value("Room Two"));
 
-        verify(roomServiceMock, times(1)).filterRooms(null, "Room Two", null, null, null, null, null);
+        verify(roomServiceMock, times(1)).getFilteredRooms(null, "Room Two", null, null, null, null, null);
     }
 
     @Test
@@ -135,11 +135,11 @@ public class RoomControllerIntegrationTests {
     }
 
     @Test
-    public void testEditHotelRoom() throws Exception {
+    public void testUpdateRoom() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         String roomDtoJson = objectMapper.writeValueAsString(roomDto1);
 
-        when(roomServiceMock.editRoom(any(RoomDto.class))).thenReturn(roomDto1);
+        when(roomServiceMock.updateRoom(any(RoomDto.class))).thenReturn(roomDto1);
 
         mockMvc.perform(put("/api/v1/rooms")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -147,7 +147,7 @@ public class RoomControllerIntegrationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Room One"));
 
-        verify(roomServiceMock, times(1)).editRoom(any(RoomDto.class));
+        verify(roomServiceMock, times(1)).updateRoom(any(RoomDto.class));
     }
 }
 

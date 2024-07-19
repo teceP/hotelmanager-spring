@@ -52,7 +52,7 @@ public class RoomServiceMockImpl implements RoomService {
     }
 
     @Override
-    public RoomDto editRoom(RoomDto roomDto) {
+    public RoomDto updateRoom(RoomDto roomDto) {
         // Mock implementation to edit a room and return the updated RoomDto
         return RoomDto.builder()
                 .id(roomDto.id())
@@ -64,7 +64,7 @@ public class RoomServiceMockImpl implements RoomService {
     }
 
     @Override
-    public List<RoomDto> filterRooms(List<Long> ids, String name, String description, LocalDate startDate, LocalDate endDate, Boolean hasMinibar, RoomSize roomSize) {
+    public List<RoomDto> getFilteredRooms(List<Long> ids, String name, String description, LocalDate startDate, LocalDate endDate, Boolean hasMinibar, RoomSize roomSize) {
         // Mock implementation to filter rooms based on criteria
         List<RoomDto> filteredRooms = new ArrayList<>();
         // Implement your filtering logic here based on the parameters

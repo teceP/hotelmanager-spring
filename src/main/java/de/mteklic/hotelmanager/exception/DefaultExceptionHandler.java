@@ -78,7 +78,7 @@ public class DefaultExceptionHandler {
         log.error("Exception handler for HttpMessageNotReadableException");
 
         String path = request.getRequestURI();
-        String message = "Malformed JSON request or wrong object type or object value.";
+        String message = ex.getMessage();
         int statusCode = HttpStatus.BAD_REQUEST.value();
         LocalDateTime localDateTime = LocalDateTime.now();
         List<ApiError.Entry> entries = new ArrayList<>();
@@ -202,14 +202,36 @@ public class DefaultExceptionHandler {
     }
 
     /**
-     * Handles StartAndOrEndDateBeforeNowException and returns a ResponseEntity with a custom status error response body.
+     * Handles InvalidDataAccessApiUsageException and returns a ResponseEntity with a custom status error response body.
      *
      * @param ex The StartAndOrEndDateBeforeNowException that occurred.
      * @return ResponseEntity containing a custom status error response.
      */
     @ExceptionHandler(InvalidDataAccessApiUsageException.class)
     protected ResponseEntity<ApiError> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex, HttpServletRequest request) {
-        log.error("Exception handler for StartAndOrEndDateBeforeNowException");
+        log.error("Exception handler for InvalidDataAccessApiUsageException");
+        log.error(ex.getMessage());
+
+        ApiError apiError = ApiError
+                .builder()
+                .path(request.getRequestURI())
+                .message(ex.getMessage())
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .localDateTime(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handles StartAndOrEndDateNullException and returns a ResponseEntity with a custom status error response body.
+     *
+     * @param ex The StartAndOrEndDateBeforeNowException that occurred.
+     * @return ResponseEntity containing a custom status error response.
+     */
+    @ExceptionHandler(StartAndOrEndDateNullException.class)
+    protected ResponseEntity<ApiError> handleStartAndOrEndDateNullException(StartAndOrEndDateNullException ex, HttpServletRequest request) {
+        log.error("Exception handler for StartAndOrEndDateNullException");
         log.error(ex.getMessage());
 
         ApiError apiError = ApiError

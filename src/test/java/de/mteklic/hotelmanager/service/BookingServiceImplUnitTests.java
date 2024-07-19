@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -36,6 +37,9 @@ public class BookingServiceImplUnitTests {
     @Mock
     private RoomServiceImpl roomServiceImpl;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
     @InjectMocks
     private BookingServiceImpl bookingServiceImpl;
 
@@ -43,8 +47,9 @@ public class BookingServiceImplUnitTests {
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
+
     @Test
-    void testCreateBooking_ValidBooking() throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
+    void testCreateBooking_ValidBooking() throws Exception {
         Long roomId = 1L;
         LocalDate startDate = LocalDate.now().plusDays(1);
         LocalDate endDate = LocalDate.now().plusDays(5);
@@ -174,7 +179,7 @@ public class BookingServiceImplUnitTests {
     }
 
     @Test
-    void testCreateBooking_BookingInLeapYear() throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
+    void testCreateBooking_BookingInLeapYear() throws Exception {
         Long roomId = 1L;
         int currentYear = LocalDate.now().getYear() + 1;
         int nextLeapYear = -1;
@@ -209,7 +214,7 @@ public class BookingServiceImplUnitTests {
     }
 
     @Test
-    void testCreateBooking_BookingInNonLeapYear() throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
+    void testCreateBooking_BookingInNonLeapYear() throws Exception {
         Long roomId = 1L;
         LocalDate startDate = LocalDate.now().plusYears(0).withMonth(12).withDayOfMonth(30); // End of December
         LocalDate endDate = LocalDate.now().plusYears(1).withMonth(1).withDayOfMonth(3); // Start of January
@@ -281,7 +286,7 @@ public class BookingServiceImplUnitTests {
     }
 
     @Test
-    public void testDeleteBookingIsInvoked() throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
+    public void testDeleteBookingIsInvoked() throws Exception {
         RoomDto roomDto = new RoomDto(1L, "Test Room", "", true, RoomSize.SUITE, Collections.emptyList());
         Room room = Room.builder()
                 .id(1L)
@@ -314,7 +319,7 @@ public class BookingServiceImplUnitTests {
 
 
     @Test
-    public void testDeleteBooking_NotInvokedNonExistentId() throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
+    public void testDeleteBooking_NotInvokedNonExistentId() throws Exception {
         RoomDto roomDto = new RoomDto(1L, "Test Room", "", true, RoomSize.SUITE, Collections.emptyList());
         Room room = Room.builder()
                 .id(1L)
@@ -345,7 +350,7 @@ public class BookingServiceImplUnitTests {
     }
 
     @Test
-    public void testDeleteBooking_Invoked() throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
+    public void testDeleteBooking_Invoked() throws Exception {
         RoomDto roomDto = new RoomDto(1L, "Test Room", "", true, RoomSize.SUITE, Collections.emptyList());
         Room room = Room.builder()
                 .id(1L)
@@ -377,7 +382,7 @@ public class BookingServiceImplUnitTests {
     }
 
     @Test
-    public void testUpdateBooking_Invoked() throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
+    public void testUpdateBooking_Invoked() throws Exception {
         RoomDto roomDto = new RoomDto(1L, "Test Room", "", true, RoomSize.SUITE, Collections.emptyList());
         Room room = Room.builder()
                 .id(1L)
@@ -420,7 +425,7 @@ public class BookingServiceImplUnitTests {
     }
 
     @Test
-    public void testUpdateBooking_NotInvokedIdNotPresent() throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
+    public void testUpdateBooking_NotInvokedIdNotPresent() throws Exception {
         RoomDto roomDto = new RoomDto(1L, "Test Room", "", true, RoomSize.SUITE, Collections.emptyList());
         Room room = Room.builder()
                 .id(1L)

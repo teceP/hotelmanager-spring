@@ -46,7 +46,7 @@ public interface RoomService {
      * @return RoomDto representing the updated room.
      * @throws ResponseStatusException If the room with the specified ID is not found.
      */
-    RoomDto editRoom(RoomDto roomDto);
+    RoomDto updateRoom(RoomDto roomDto);
 
     /**
      * Filters rooms based on various criteria.
@@ -59,7 +59,7 @@ public interface RoomService {
      * @param hasMinibar      Whether rooms should have minibar.
      * @return List of RoomDto representing filtered rooms.
      */
-    List<RoomDto> filterRooms(List<Long> ids, String name, String description, LocalDate startDate, LocalDate endDate, Boolean hasMinibar, RoomSize roomSize);
+    List<RoomDto> getFilteredRooms(List<Long> ids, String name, String description, LocalDate startDate, LocalDate endDate, Boolean hasMinibar, RoomSize roomSize);
     /**
      * Converts a Room entity to RoomDto.
      *

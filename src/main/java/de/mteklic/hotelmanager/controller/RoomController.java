@@ -32,7 +32,7 @@ public interface RoomController {
      * @return ResponseEntity containing the RoomDto for the specified ID.
      */
     @GetMapping("/{id}")
-    ResponseEntity<RoomDto> getHotelRoom(@PathVariable("id") Long id) throws ResponseStatusException;
+    ResponseEntity<RoomDto> getRoom(@PathVariable("id") Long id) throws ResponseStatusException;
 
     /**
      * Endpoint to filter hotel rooms based on various criteria.
@@ -46,13 +46,13 @@ public interface RoomController {
      * @return ResponseEntity containing a list of RoomDto objects that match the filter criteria.
      */
     @GetMapping("/filter")
-    ResponseEntity<List<RoomDto>> filter(@RequestParam(required = false) List<Long> ids,
-                                                @RequestParam(required = false) String name,
-                                                @RequestParam(required = false) String description,
-                                                @RequestParam(required = false) LocalDate startDate,
-                                                @RequestParam(required = false) LocalDate endDate,
-                                                @RequestParam(required = false) Boolean hasMinibar,
-                                                @RequestParam(required = false) RoomSize roomSize);
+    ResponseEntity<List<RoomDto>> getFilteredRooms(@RequestParam(required = false) List<Long> ids,
+                                                   @RequestParam(required = false) String name,
+                                                   @RequestParam(required = false) String description,
+                                                   @RequestParam(required = false) LocalDate startDate,
+                                                   @RequestParam(required = false) LocalDate endDate,
+                                                   @RequestParam(required = false) Boolean hasMinibar,
+                                                   @RequestParam(required = false) RoomSize roomSize);
 
     /**
      * Endpoint to add a new hotel room.
@@ -80,5 +80,5 @@ public interface RoomController {
      * @return ResponseEntity containing the updated RoomDto.
      */
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<RoomDto> editHotelRoom(@RequestBody @Valid RoomDto roomDto) throws ResponseStatusException;
+    ResponseEntity<RoomDto> updateRoom(@RequestBody @Valid RoomDto roomDto) throws ResponseStatusException;
 }
