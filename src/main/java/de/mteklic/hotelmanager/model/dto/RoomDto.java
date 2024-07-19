@@ -9,5 +9,4 @@ import java.util.List;
 
 @Builder
 @JsonSerialize
-public record RoomDto(Long id, String name, String description, Boolean hasMinibar, RoomSize roomSize, List<BookingDto> bookings)  {
-}
+public record RoomDto(Long id, String name, String description, Boolean hasMinibar, RoomSize roomSize, List<BookingDto> bookings)  {}

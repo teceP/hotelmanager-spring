@@ -52,15 +52,15 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDto addBooking(Long roomId, BookingDto bookingDto) throws RoomBookedOutException, EndDateBeforeStartDateException, StartAndOrEndDateBeforeNowException {
+    public BookingDto createBooking(Long roomId, BookingDto bookingDto) throws RoomBookedOutException, EndDateBeforeStartDateException, StartAndOrEndDateBeforeNowException {
         // Validate booking dates
         isDatesLegal(bookingDto.startDate(), bookingDto.endDate());
 
         // Retrieve room details without directly accessing RoomService
         RoomDto roomDto = retrieveRoom(roomId);
 
-        // Check if the room is available for booking
-        isBookingAvailable(roomDto, bookingDto.startDate(), bookingDto.endDate());
+         // Check if the room is available for booking
+         isBookingAvailable(roomDto.id(), bookingDto.startDate(), bookingDto.endDate());
 
         // Convert RoomDto to Room entity, so its passable into the booking object
         Room room = Room.builder().id(roomDto.id())
@@ -68,7 +68,7 @@ public class BookingServiceImpl implements BookingService {
                 .description(roomDto.description())
                 .hasMinibar(roomDto.hasMinibar())
                 .roomSize(roomDto.roomSize())
-                .bookings(new ArrayList<>())
+                //.bookings(new ArrayList<>())
                 .build();
 
         // Create booking entity
@@ -118,17 +118,17 @@ public class BookingServiceImpl implements BookingService {
     /**
      * Checks if the room is available for booking in the specified date range.
      *
-     * @param roomDto   RoomDto object representing the room to be checked.
+     * @param roomId   Room ID of the object representing the room to be checked.
      * @param startDate Start date of the booking.
      * @param endDate   End date of the booking.
      * @throws RoomBookedOutException If the room is already booked for the given date range.
      */
-    private void isBookingAvailable(RoomDto roomDto, LocalDate startDate, LocalDate endDate) throws RoomBookedOutException {
-        List<Booking> bookings = this.bookingRepository.findAllByRoomId(roomDto.id());
+    private void isBookingAvailable(Long roomId, LocalDate startDate, LocalDate endDate) throws RoomBookedOutException {
+        List<Booking> bookings = this.bookingRepository.findAllByRoomId(roomId);
 
         // Check fir overlapping bookings
         if (!bookings.isEmpty() && hasAnyOverlap(bookings, startDate, endDate)) {
-            throw new RoomBookedOutException(roomDto.id(), startDate, endDate);
+            throw new RoomBookedOutException(roomId, startDate, endDate);
         }
     }
 
@@ -178,19 +178,20 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getAvailableBookings(List<Long> roomIds, LocalDate startDate, LocalDate endDate) {
+    public List<Booking> getUnavailableBookings(List<Long> roomIds, LocalDate startDate, LocalDate endDate) {
         Specification<Booking> specification = Specification.where(null);
 
-        // Create predicate for dynamic query building
+        // Create spec for specific ids if specified
         if (!roomIds.isEmpty()) {
             specification.and(BookingSpecifications.hasRoomIds(roomIds));
         }
 
+        // Create spec for specific time range, which gets all unavailable bookings
         if (startDate != null && endDate != null) {
             specification.and(BookingSpecifications.hasOverlap(startDate, endDate));
         }
 
-        // Fetch available bookings based on the criteria
+        // Fetch unavailable bookings based on the criteria
         return this.bookingRepository.findAll(specification);
     }
 

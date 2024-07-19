@@ -1,11 +1,8 @@
 package de.mteklic.hotelmanager.controller;
 
 import de.mteklic.hotelmanager.model.RoomSize;
-import de.mteklic.hotelmanager.model.dto.BookingDto;
 import de.mteklic.hotelmanager.model.dto.RoomDto;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import de.mteklic.hotelmanager.service.impl.RoomServiceImpl;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,11 +109,11 @@ public class RoomControllerIntegrationTests {
     }
 
     @Test
-    public void testAddRoom() throws Exception {
+    public void testCreateRoom() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         String roomDtoJson = objectMapper.writeValueAsString(roomDto3);
 
-        when(roomServiceMock.addRoom(any(RoomDto.class))).thenReturn(roomDto3);
+        when(roomServiceMock.createRoom(any(RoomDto.class))).thenReturn(roomDto3);
 
         mockMvc.perform(post("/api/v1/rooms")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -124,7 +121,7 @@ public class RoomControllerIntegrationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Room Three"));
 
-        verify(roomServiceMock, times(1)).addRoom(any(RoomDto.class));
+        verify(roomServiceMock, times(1)).createRoom(any(RoomDto.class));
     }
 
     @Test

@@ -4,7 +4,6 @@ import de.mteklic.hotelmanager.exception.EndDateBeforeStartDateException;
 import de.mteklic.hotelmanager.exception.RoomBookedOutException;
 import de.mteklic.hotelmanager.exception.StartAndOrEndDateBeforeNowException;
 import de.mteklic.hotelmanager.model.dto.BookingDto;
-import de.mteklic.hotelmanager.service.impl.BookingServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +26,7 @@ public interface BookingController {
      * @throws EndDateBeforeStartDateException     If the end date is before the start date.
      */
     @PostMapping("/{roomId}")
-    ResponseEntity<BookingDto> addBooking(@PathVariable("roomId") Long roomId, @RequestBody BookingDto bookingDto) throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException;
+    ResponseEntity<BookingDto> createBooking(@PathVariable("roomId") Long roomId, @RequestBody BookingDto bookingDto) throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException;
 
     /**
      * Endpoint to update a booking for a specific room.

@@ -62,7 +62,7 @@ public interface RoomController {
      */
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<RoomDto> addRoom(@RequestBody @Valid RoomDto roomDto);
+    ResponseEntity<RoomDto> createRoom(@RequestBody @Valid RoomDto roomDto);
     /**
      * Endpoint to delete a hotel room by its ID.
      *

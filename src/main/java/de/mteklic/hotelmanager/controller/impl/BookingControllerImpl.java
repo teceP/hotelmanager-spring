@@ -23,8 +23,8 @@ public class BookingControllerImpl implements BookingController {
     }
 
     @Override
-    public ResponseEntity<BookingDto> addBooking(@PathVariable("roomId") Long roomId, @RequestBody BookingDto bookingDto) throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
-        return ResponseEntity.ok(this.bookingServiceImpl.addBooking(roomId, bookingDto));
+    public ResponseEntity<BookingDto> createBooking(@PathVariable("roomId") Long roomId, @RequestBody BookingDto bookingDto) throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException {
+        return ResponseEntity.ok(this.bookingServiceImpl.createBooking(roomId, bookingDto));
     }
 
     @Override

@@ -34,7 +34,7 @@ public class RoomServiceMockImpl implements RoomService {
     }
 
     @Override
-    public RoomDto addRoom(RoomDto roomDto) {
+    public RoomDto createRoom(RoomDto roomDto) {
         // Mock implementation to add a room and return the added RoomDto
         return RoomDto.builder()
                 .id(roomDto.id())

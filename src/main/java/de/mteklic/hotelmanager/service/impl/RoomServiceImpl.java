@@ -61,7 +61,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Transactional
-    public RoomDto addRoom(RoomDto roomDto) {
+    public RoomDto createRoom(RoomDto roomDto) {
         // Validation of the object is done automatically by Springs @Valid annotations and our custom rules in the Room Model class.
         Room room = Room.builder().id(roomDto.id())
                 .name(roomDto.name())
@@ -185,18 +185,15 @@ public class RoomServiceImpl implements RoomService {
         if (startDate != null && endDate != null) {
             log.debug("Add startDate: {} & endDate spec: {}", startDate, endDate);
 
-            //Get all available rooms within the specific date range
-            List<Long> availableRooms = this.bookingService.getAvailableBookings(rooms.stream().map(Room::getId).toList(), startDate, endDate)
+            //Get unavailable rooms within the specific date range
+            List<Long> availableRooms = this.bookingService.getUnavailableBookings(rooms.stream().map(Room::getId).toList(), startDate, endDate)
                     .stream()
                     .map(Booking::getRoom)
                     .map(Room::getId)
                     .toList();
 
             // Filter rooms that are not available in the specific date range
-            rooms = rooms
-                    .stream()
-                    .filter(room -> availableRooms.contains(room.getId()))
-                    .toList();
+            rooms.removeIf(room -> availableRooms.contains(room.getId()));
         }
         return rooms;
     }
