@@ -31,21 +31,20 @@ services:
         condition: service_healthy
 
   psql:
-    image: bitnami/postgresql:16.3.0
+    image: postgres:16.3
     ports:
       - '5432:5432'
     volumes:
-      - psqldata:/bitnami/postgresql
+      - psqldata:/var/lib/postgresql/data
     environment:
-      POSTGRESQL_USERNAME: user
-      POSTGRESQL_PASSWORD: pass
-      POSTGRESQL_DATABASE: hotelmanager
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: hotelmanager
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -d hotelmanager"]
       interval: 5s
       timeout: 5s
       retries: 5
-
 
 volumes:
   psqldata: {}
