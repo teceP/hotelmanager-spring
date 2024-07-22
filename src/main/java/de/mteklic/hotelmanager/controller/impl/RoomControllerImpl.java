@@ -7,6 +7,7 @@ import de.mteklic.hotelmanager.service.impl.RoomServiceImpl;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -29,12 +30,7 @@ public class RoomControllerImpl implements RoomController {
 
     @Override
     public ResponseEntity<RoomDto> createRoom(@RequestBody @Valid RoomDto roomDto) {
-        return ResponseEntity.ok(this.roomServiceImpl.createRoom(roomDto));
-    }
-
-    @Override
-    public ResponseEntity<RoomDto> getRoom(@PathVariable("id") Long id) throws ResponseStatusException {
-        return ResponseEntity.ok(this.roomServiceImpl.getRoom(id));
+        return new ResponseEntity<>(this.roomServiceImpl.createRoom(roomDto), HttpStatus.CREATED);
     }
 
     @Override
@@ -42,6 +38,10 @@ public class RoomControllerImpl implements RoomController {
         return ResponseEntity.ok(this.roomServiceImpl.getAllRooms());
     }
 
+    @Override
+    public ResponseEntity<RoomDto> getRoom(@PathVariable("id") Long id) throws ResponseStatusException {
+        return ResponseEntity.ok(this.roomServiceImpl.getRoom(id));
+    }
 
     @Override
     public ResponseEntity<List<RoomDto>> getFilteredRooms(@RequestParam(required = false) List<Long> ids,
@@ -56,7 +56,8 @@ public class RoomControllerImpl implements RoomController {
 
     @Override
     public ResponseEntity<RoomDto> updateRoom(@RequestBody @Valid RoomDto roomDto) throws ResponseStatusException {
-        return ResponseEntity.ok(this.roomServiceImpl.updateRoom(roomDto));
+        this.roomServiceImpl.updateRoom(roomDto);
+        return ResponseEntity.noContent().build();
     }
 
     @Override

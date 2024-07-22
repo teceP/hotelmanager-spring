@@ -31,18 +31,6 @@ public interface BookingController {
     ResponseEntity<BookingDto> createBooking(@PathVariable("roomId") Long roomId, @RequestBody BookingDto bookingDto) throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException, StartAndOrEndDateNullException;
 
     /**
-     * Endpoint to update a booking for a specific room.
-     *
-     * @param bookingDto BookingDto with changed start AND end date. Both should be set, even if only one changes.
-     * @return ResponseEntity containing the updated BookingDto after adding the booking.
-     * @throws RoomBookedOutException              If the room is already booked for the specified dates.
-     * @throws StartAndOrEndDateBeforeNowException If start or end date is before the current date.
-     * @throws EndDateBeforeStartDateException     If the end date is before the start date.
-     */
-    @PutMapping
-    ResponseEntity<BookingDto> updateBooking(@RequestBody BookingDto bookingDto) throws StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException, RoomBookedOutException;
-
-    /**
      * Endpoint to retrieve all bookings for a specific room.
      *
      * @param roomId ID of the room.
@@ -59,6 +47,18 @@ public interface BookingController {
      */
     @GetMapping("/{id}")
     ResponseEntity<BookingDto> getBookingsById(@PathVariable("id") Long id);
+
+    /**
+     * Endpoint to update a booking for a specific room.
+     *
+     * @param bookingDto BookingDto with changed start AND end date. Both should be set, even if only one changes.
+     * @return ResponseEntity containing the updated BookingDto after adding the booking.
+     * @throws RoomBookedOutException              If the room is already booked for the specified dates.
+     * @throws StartAndOrEndDateBeforeNowException If start or end date is before the current date.
+     * @throws EndDateBeforeStartDateException     If the end date is before the start date.
+     */
+    @PutMapping
+    ResponseEntity<BookingDto> updateBooking(@RequestBody BookingDto bookingDto) throws StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException, RoomBookedOutException;
 
     /**
      * Endpoint to delete a booking by its ID.

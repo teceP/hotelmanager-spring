@@ -18,6 +18,15 @@ import java.util.List;
 public interface RoomController {
 
     /**
+     * Endpoint to add a new hotel room.
+     *
+     * @param roomDto RoomDto object representing the room to add.
+     * @return ResponseEntity containing the added RoomDto with generated ID.
+     */
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<RoomDto> createRoom(@RequestBody @Valid RoomDto roomDto);
+
+    /**
      * Endpoint to retrieve all hotel rooms.
      *
      * @return ResponseEntity containing a list of all RoomDto objects.
@@ -55,25 +64,6 @@ public interface RoomController {
                                                    @RequestParam(required = false) RoomSize roomSize);
 
     /**
-     * Endpoint to add a new hotel room.
-     *
-     * @param roomDto RoomDto object representing the room to add.
-     * @return ResponseEntity containing the added RoomDto with generated ID.
-     */
-
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<RoomDto> createRoom(@RequestBody @Valid RoomDto roomDto);
-    /**
-     * Endpoint to delete a hotel room by its ID.
-     *
-     * @param id ID of the room to delete.
-     * @return ResponseEntity indicating success (status code 204) or failure (status code 404 if room not found).
-     */
-
-    @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteById(@PathVariable("id") Long id) throws ResponseStatusException;
-
-    /**
      * Endpoint to edit a hotel room with full updates.
      *
      * @param roomDto RoomDto object representing the updated room details.
@@ -81,4 +71,13 @@ public interface RoomController {
      */
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<RoomDto> updateRoom(@RequestBody @Valid RoomDto roomDto) throws ResponseStatusException;
+
+    /**
+     * Endpoint to delete a hotel room by its ID.
+     *
+     * @param id ID of the room to delete.
+     * @return ResponseEntity indicating success (status code 204) or failure (status code 404 if room not found).
+     */
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> deleteById(@PathVariable("id") Long id) throws ResponseStatusException;
 }

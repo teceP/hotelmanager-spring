@@ -63,7 +63,7 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     public RoomDto createRoom(RoomDto roomDto) {
         // Validation of the object is done automatically by Springs @Valid annotations and our custom rules in the Room Model class.
-        Room room = Room.builder().id(roomDto.id())
+        Room room = Room.builder()
                 .name(roomDto.name())
                 .description(roomDto.description())
                 .hasMinibar(roomDto.hasMinibar())
@@ -127,16 +127,13 @@ public class RoomServiceImpl implements RoomService {
 
         log.debug("Filtered size after database findAll(specs): {}", filteredRooms.size());
 
-        if (!filteredRooms.isEmpty()){
-            filteredRooms.remove(0);
-        }
+        // Returned list from repository might be immutable. Avoid errors and work with list from applyDateRangeFilter method
+        List<Room> mutableFilteredRooms = applyDateRangeFilter(filteredRooms, startDate, endDate);
 
-        filteredRooms = applyDateRangeFilter(filteredRooms, startDate, endDate);
-
-        log.debug("FilteredRooms size: {}", filteredRooms.size());
+        log.debug("FilteredRooms size: {}", mutableFilteredRooms.size());
 
         // Convert filtered rooms to RoomDto
-        return filteredRooms
+        return mutableFilteredRooms
                 .stream()
                 .map(this::convertToDto)
                 .toList();
@@ -189,6 +186,9 @@ public class RoomServiceImpl implements RoomService {
         if (startDate != null && endDate != null) {
             log.debug("Add startDate: {} & endDate spec: {}", startDate, endDate);
 
+            // Create mutable list
+            List<Room> roomsMutable = new ArrayList<>(rooms);
+
             //Get unavailable rooms within the specific date range
             List<Long> availableRooms = this.bookingService.getUnavailableBookings(rooms.stream().map(Room::getId).toList(), startDate, endDate)
                     .stream()
@@ -197,8 +197,12 @@ public class RoomServiceImpl implements RoomService {
                     .toList();
 
             // Filter rooms that are not available in the specific date range
-            rooms.removeIf(room -> availableRooms.contains(room.getId()));
+            roomsMutable.removeIf(room -> availableRooms.contains(room.getId()));
+
+            return roomsMutable;
         }
+
+        log.debug("Start and or end date was null, returning provided list.");
         return rooms;
     }
 

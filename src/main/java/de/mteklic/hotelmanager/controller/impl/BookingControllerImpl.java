@@ -5,6 +5,7 @@ import de.mteklic.hotelmanager.exception.*;
 import de.mteklic.hotelmanager.model.dto.BookingDto;
 import de.mteklic.hotelmanager.service.impl.BookingServiceImpl;
 import org.apache.coyote.BadRequestException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class BookingControllerImpl implements BookingController {
 
     @Override
     public ResponseEntity<BookingDto> createBooking(@PathVariable("roomId") Long roomId, @RequestBody BookingDto bookingDto) throws RoomBookedOutException, StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException, StartAndOrEndDateNullException {
-        return ResponseEntity.ok(this.bookingServiceImpl.createBooking(roomId, bookingDto));
+        return new ResponseEntity<>(this.bookingServiceImpl.createBooking(roomId, bookingDto), HttpStatus.CREATED);
     }
 
     @Override
@@ -40,7 +41,8 @@ public class BookingControllerImpl implements BookingController {
 
     @Override
     public ResponseEntity<BookingDto> updateBooking(@RequestBody BookingDto bookingDto) throws StartAndOrEndDateBeforeNowException, EndDateBeforeStartDateException, RoomBookedOutException {
-        return ResponseEntity.ok(this.bookingServiceImpl.updateBooking(bookingDto));
+        this.bookingServiceImpl.updateBooking(bookingDto);
+        return ResponseEntity.noContent().build();
     }
 
     @Override

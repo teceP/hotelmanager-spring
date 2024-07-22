@@ -24,8 +24,6 @@ services:
     command: ["ng", "serve", "--host", "0.0.0.0", "-c", "development"]
     ports:
       - '4200:4200'
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/hotelmanager
     depends_on:
       hotelmanager-backend:
         condition: service_healthy
@@ -41,7 +39,7 @@ services:
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: hotelmanager
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d hotelmanager"]
+      test: ["CMD-SHELL", "pg_isready -d hotelmanager -U user"]
       interval: 5s
       timeout: 5s
       retries: 5

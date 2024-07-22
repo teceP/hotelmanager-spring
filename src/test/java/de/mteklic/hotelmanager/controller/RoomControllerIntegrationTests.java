@@ -118,7 +118,7 @@ public class RoomControllerIntegrationTests {
         mockMvc.perform(post("/api/v1/rooms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(roomDtoJson))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("Room Three"));
 
         verify(roomServiceMock, times(1)).createRoom(any(RoomDto.class));
@@ -144,8 +144,7 @@ public class RoomControllerIntegrationTests {
         mockMvc.perform(put("/api/v1/rooms")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(roomDtoJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Room One"));
+                .andExpect(status().isNoContent());
 
         verify(roomServiceMock, times(1)).updateRoom(any(RoomDto.class));
     }
